@@ -36,7 +36,7 @@ class AuthController extends Controller
         //validation
         $valid = $request->validate([
             'email' => 'required|email',
-            'mdp' => 'required|min:6',
+            'password' => 'required|min:6',
         ]);
 
         if (!Auth::attempt($valid)) {
