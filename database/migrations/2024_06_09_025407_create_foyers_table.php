@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('foyers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('user_id');
-            $table->integer('admin_id');
+            $table->integer('admin_id')->nullable();
             $table->String('image')->nullable();
             $table->timestamps();
         });
 
+        // un utilisateur ne peut être relier qu'à un seul foyer
         Schema::table('users', function (Blueprint $table) {
             $table->foreignIdFor(\App\Models\Foyer::class)->nullable()->constrained()->cascadeOnDelete();
         });

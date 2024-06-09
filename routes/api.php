@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FoyerController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,5 +29,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // user
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+
+
+    //Foyer
+    Route::post('/foyer', [FoyerController::class, 'foyer']);
 
 });
