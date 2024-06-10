@@ -32,6 +32,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
 
     //Foyer
-    Route::post('/foyer', [FoyerController::class, 'foyer']);
+    Route::get('/foyer', [FoyerController::class, 'index']);
+    Route::post('/foyer', [FoyerController::class, 'store']);
+    Route::put('/foyer/{id}', [FoyerController::class, 'update']);
+    Route::delete('/foyer/{id}', [FoyerController::class, 'delete']);
 
 });
