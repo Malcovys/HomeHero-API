@@ -37,4 +37,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::put('/foyer/{id}', [FoyerController::class, 'update']);
     Route::delete('/foyer/{id}', [FoyerController::class, 'delete']);
 
+    //Tache
+    Route::get('/foyer/{id}/tache', [FoyerController::class, 'index']);
+    Route::post('/foyer/{id}/tache', [FoyerController::class, 'store']);
+    Route::put('/tache/{id}', [FoyerController::class, 'update']);
+    Route::delete('/tache/{id}', [FoyerController::class, 'delete']);
 });
