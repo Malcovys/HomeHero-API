@@ -23,6 +23,10 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->foreignIdFor(\App\Models\Foyer::class)->nullable()->constrained()->cascadeOnDelete();
         });
+
+        Schema::table('taches', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Foyer::class)->nullable()->constrained()->cascadeOnDelete();
+        });
     }
 
     /**
@@ -31,6 +35,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('foyers');
+        Schema::dropIfExists('taches');
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeignIdFor(\App\Models\Foyer::class);
         });
