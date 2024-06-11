@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FoyerController;
 use App\Http\Controllers\TacheController;
 use App\Http\Controllers\TodoTacheController;
+use App\Http\Controllers\AddUserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,4 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //Tache à faire
     Route::post('/foyer/{id}/todoTache', [TodoTacheController::class, 'todoTache']);
+
+    //Ajouter un utilisateur dans un foyer
+    Route::post('/foyer/{id}/addUser', [AddUserController::class, 'addUser']);
 });
