@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Foyer;
 
 return new class extends Migration
 {
@@ -14,9 +15,12 @@ return new class extends Migration
         Schema::create('taches', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('foyer_id');
             $table->timestamps();
+            $table->foreignIdFor(\App\Models\Foyer::class)->nullable()->constrained()->cascadeOnDelete();
         });
+
+
+
     }
 
     /**

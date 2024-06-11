@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FoyerController;
+use App\Http\Controllers\TacheController;
+use App\Http\Controllers\TodoTacheController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,9 +39,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::put('/foyer/{id}', [FoyerController::class, 'update']);
     Route::delete('/foyer/{id}', [FoyerController::class, 'delete']);
 
+
     //Tache
-    Route::get('/foyer/{id}/tache', [FoyerController::class, 'index']);
-    Route::post('/foyer/{id}/tache', [FoyerController::class, 'store']);
-    Route::put('/tache/{id}', [FoyerController::class, 'update']);
-    Route::delete('/tache/{id}', [FoyerController::class, 'delete']);
+    Route::get('/foyer/{id}/tache', [TacheController::class, 'index']);
+    Route::post('/foyer/{id}/tache', [TacheController::class, 'store']);
+    Route::put('/tache/{id}', [TacheController::class, 'update']);
+    Route::delete('/tache/{id}', [TacheController::class, 'delete']);
+
+
+    //Tache à faire
+    Route::post('/foyer/{id}/todoTache', [TodoTacheController::class, 'todoTache']);
 });

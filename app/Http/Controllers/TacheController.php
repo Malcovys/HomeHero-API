@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tache;
+use App\Models\Foyer;
 class TacheController extends Controller
 {
         //Afficher les taches d'un foyer
         public function index($id) {
 
             $foyer = Foyer::find($id);
-    
+            if (!$foyer) {
+                return response([
+                    'message' => 'Foyer inconnu',
+                ],403);
+            }
+
             return response(
                 [
                     'foyers' => $foyer->taches()->orderBy('name', 'desc')->get()
@@ -19,21 +25,34 @@ class TacheController extends Controller
         }
     
         // Créer une tache
-        public function store(Request $request) {
+        public function store(Request $request, $id) {
             // validation
             $valid = $request->validate([
                 'name' => 'required|string',
             ]);
+
+            $foyer = Foyer::find($id);
+
+            if($foyer->admin_id !== auth()->user()->id) {
+                return response([
+                    'message' => "L'utislisateur n'a pas accès à cela",
+                ],403);
+            }
+
+            if (!$foyer) {
+                return response([
+                    'message' => 'Foyer inconnu',
+                ],403);
+            }
     
-            $foyer = Tache::create([
+            $tache = Tache::create([
                 'name' => $valid['name'],
-                
-                'admin_id' => auth()->user()->id
+                'foyer_id' => $id
             ]);
     
             return response([
-                'message' => 'Foyer created',
-                'foyer' => $foyer
+                'message' => 'Tache created',
+                'tache' => $tache
             ],200);
         }
     
@@ -43,50 +62,50 @@ class TacheController extends Controller
             $valid = $request->validate([
                 'name' => 'required|string',
             ]);
-            $foyer = Foyer::find($id);
+            $tache = Tache::find($id);
     
-            if($foyer->admin_id !== auth()->user()->id) {
+            if($tache->foyer->admin_id !== auth()->user()->id) {
                 return response([
                     'message' => "L'utislisateur n'a pas accès à cela",
                 ],403);
             }
             
-            if (!$foyer) {
+            if (!$tache) {
                 return response([
-                    'message' => 'Foyer inconnu',
+                    'message' => 'Tache inconnu',
                 ],403);
             }
     
-            $foyer -> update([
+            $tache -> update([
                 'name' => $valid['name'],
             ]);
     
             return response([
-                'message' => 'Foyer created',
-                'foyer' => $foyer
+                'message' => 'Tache updated',
+                'foyer' => $tache
             ],200);
         }
     
-        // Supprimer la tache
+        // // Supprimer la tache
         public function delete($id){
-            $foyer = Foyer::find($id);
+            $tache = Tache::find($id);
     
-            if($foyer->admin_id !== auth()->user()->id) {
+            if($tache->foyer->admin_id !== auth()->user()->id) {
                 return response([
                     'message' => "L'utislisateur n'a pas accès à cela",
                 ],403);
             }
     
-            if (!$foyer) {
+            if (!$tache) {
                 return response([
-                    'message' => 'Foyer inconnu',
+                    'message' => 'Tache inconnu',
                 ],403);
             }
     
-            $foyer -> delete();
+            $tache -> delete();
     
             return response([
-                'message' => 'Foyer supprimé',
+                'message' => 'Tache supprimé',
             ],200);
         }
 }

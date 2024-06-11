@@ -65,7 +65,7 @@ class FoyerController extends Controller
 
         // retourner le foyer
         return response([
-            'message' => 'Foyer created',
+            'message' => 'Foyer updated',
             'foyer' => $foyer
         ],200);
     }
