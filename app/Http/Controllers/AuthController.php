@@ -11,23 +11,23 @@ class AuthController extends Controller
     // Register
     public function register(Request $request) {
         //validation
-        $valid = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
-        ]);
+        // $valid = $request->validate([
+        //     'name' => 'required|string',
+        //     'email' => 'required|email|unique:users,email',
+        //     'password' => 'required|min:6|confirmed',
+        // ]);
 
-        // Créer un utilisateur
-        $user = User::create([
-            'name' => $valid['name'],
-            'email' => $valid['email'],
-            'password' => bcrypt($valid['password']),
-        ]);
+        // // Créer un utilisateur
+        // $user = User::create([
+        //     'name' => $valid['name'],
+        //     'email' => $valid['email'],
+        //     'password' => bcrypt($valid['password']),
+        // ]);
 
         // retourner l'utilisateur et le token
         return response([
-            'user' => $user,
-            'token' => $user->createToken('secret')->plainTextToken,
+            'user' => 'essais',
+            // 'token' => $user->createToken('secret')->plainTextToken,
         ]);
     }
 
