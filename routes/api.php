@@ -25,7 +25,7 @@ use App\Http\Controllers\AddUserController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/essais', [AuthController::class, 'essais']);
+Route::get('/essais', [AuthController::class, 'essais']);
 
 // Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
