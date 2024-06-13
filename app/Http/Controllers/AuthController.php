@@ -8,6 +8,11 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    public function essais() {
+        return response([
+            'message' => "Essais",
+        ]);
+    }
     // Register
     public function register(Request $request) {
         //validation
