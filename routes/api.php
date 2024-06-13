@@ -53,4 +53,5 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //Ajouter un utilisateur dans un foyer
     Route::post('/foyer/{id}/addUser', [AddUserController::class, 'addUser']);
+    Route::delete('/addUser/{id}', [AddUserController::class, 'deleteUser']);
 });
