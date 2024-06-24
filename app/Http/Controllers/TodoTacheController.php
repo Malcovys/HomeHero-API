@@ -31,27 +31,31 @@ class TodoTacheController extends Controller
         }
     
     
-        return response([
-            'message' => 'Liste de vos taches',
-            'tache' => $this->getUserTache($id, $valid['date'])
-        ],200);
+        return response(
+            $this->getUserTache($id, $valid['date']-1),
+            200
+        );
     }
 
 
     //Obtenir la tache d'un utilisateur pendant un jour
     public function getUserTache($foyer_id, $date) {
-        $allTache = Tache::orderBy('name', 'asc')->where('foyer_id','=', $foyer_id)->get();
+        $allTache = Tache::orderBy('name', 'asc')->select('id', 'name')->where('foyer_id','=', $foyer_id)->get();
         $allUser = User::orderBy('name', 'desc')->where('foyer_id','=', $foyer_id)->get();
 
         $nbrTache = $allTache->count();
         $nbrUser = $allUser->count();
         $newAllTache = [];
 
+        $date = ($date > $nbrUser) ? ($date % $nbrUser) : $date;
+        
         // Réorganiser les taches
         if($nbrTache <= $nbrUser) {
-            foreach($allTache as $k => $tache) {
-                $newAllTache[$k] = $tache;
+            foreach ($allUser as $k => $user) {
+                $newAllTache[$k] = isset($allTache[$k]) ? $allTache[$k]->name : 'Aucun';
+
             }
+
         }
         else{
             foreach ($allTache as $index => $tache) {
@@ -71,10 +75,25 @@ class TodoTacheController extends Controller
         foreach ($allUser as $key => $user) {
 
             if(!isset($newAllTache[$key + $date])){
-                $result[$user->id] = ($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : 0;
+                $result[]= [
+                    "user" => $user->name,
+                    // "tache" =>($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : ["Un imprévu est survenu."]
+                    "tache" => $nbrTache <= $nbrUser 
+                        ? (($key + $date - $nbrUser >= 0) ? [$newAllTache[$key + $date - $nbrUser]] : ["Un imprévu est survenu."])
+                        : (($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : ["Un imprévu est survenu."])
+
+                
+                ];
             }
             else{
-                $result[$user->id] = $newAllTache[$key + $date];
+                $result[]= [
+                    "user" => $user->name,
+                    "tache" => $nbrTache <= $nbrUser 
+                        ? [$newAllTache[$key + $date]]
+                        : $newAllTache[$key + $date]
+                    
+                ];
+               
             }
 
         }

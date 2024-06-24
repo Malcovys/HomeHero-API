@@ -67,8 +67,16 @@ class AuthController extends Controller
 
     // Get user details
     public function user() {
-        return response([
-            'user' => auth()->user(),
-        ], 200);
+        $user = auth()->user();
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'foyer_id' => $user->foyer_id,
+                'email' => $user->email,
+                'foyer' =>  $user->foyer
+            ],
+        ]);
     }
+    
 }

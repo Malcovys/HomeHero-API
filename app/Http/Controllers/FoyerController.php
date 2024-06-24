@@ -32,6 +32,9 @@ class FoyerController extends Controller
             'admin_id' => auth()->user()->id
         ]);
 
+        auth()->user()->foyer_id = $foyer->id;
+        auth()->user()->save(); 
+
         // retourner le foyer
         return response([
             'message' => 'Foyer created',

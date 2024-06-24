@@ -7,6 +7,7 @@ use App\Http\Controllers\FoyerController;
 use App\Http\Controllers\TacheController;
 use App\Http\Controllers\TodoTacheController;
 use App\Http\Controllers\AddUserController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,7 +22,9 @@ use App\Http\Controllers\AddUserController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-
+Route::fallback(function(){
+    return view('404');
+});
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -33,6 +36,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // user
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+
+    //Obtenir tous les utilisateurs qui ne sont pas encore dans un foyer
+    Route::get('/allUser', [UserController::class, 'allUser']);
 
 
     //Foyer

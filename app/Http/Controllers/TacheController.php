@@ -19,7 +19,7 @@ class TacheController extends Controller
 
             return response(
                 [
-                    'foyers' => $foyer->taches()->orderBy('name', 'desc')->get()
+                    'foyers' => $foyer->tache()->select("id", "name")->orderBy('name', 'desc')->get()
                 ]
             );
         }
@@ -51,7 +51,7 @@ class TacheController extends Controller
             ]);
     
             return response([
-                'message' => 'Tache created',
+                'message' => 'La tache a été crée',
                 'tache' => $tache
             ],200);
         }
