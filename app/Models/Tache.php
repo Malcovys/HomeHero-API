@@ -12,10 +12,16 @@ class Tache extends Model
 
     protected $fillable = [
         'name',
+        'color',
         'foyer_id',
     ];
 
     public function foyer() {
         return $this->belongsTo(Foyer::class);
+    }
+
+    //Many to Many
+    public function historiques() {
+        return $this->belongsToMany(Historique::class);
     }
 }

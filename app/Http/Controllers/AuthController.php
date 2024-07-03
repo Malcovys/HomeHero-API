@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Foyer;
 
 class AuthController extends Controller
 {
     public function essais() {
+        $foyer = Foyer::find(1);
         return response([
-            'message' => "Essais",
+            'message' => $foyer->user,
         ]);
     }
     // Register

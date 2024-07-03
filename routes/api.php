@@ -8,6 +8,7 @@ use App\Http\Controllers\TacheController;
 use App\Http\Controllers\TodoTacheController;
 use App\Http\Controllers\AddUserController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HistoriqueController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,6 +40,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //Obtenir tous les utilisateurs qui ne sont pas encore dans un foyer
     Route::get('/allUser', [UserController::class, 'allUser']);
+    //Obtenir tous les utilisateurs qui sont dans le foyer
+    Route::get('/foyer/{id}/allMembre', [UserController::class, 'allMembre']);
 
 
     //Foyer
@@ -61,4 +64,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //Ajouter un utilisateur dans un foyer
     Route::post('/foyer/{id}/addUser', [AddUserController::class, 'addUser']);
     Route::delete('/addUser/{id}', [AddUserController::class, 'deleteUser']);
+
+    //Marquer comme fini une tache
+    Route::post('/historique', [HistoriqueController::class, 'historique']);
+    Route::get('historique', [HistoriqueController::class, 'confirmation']);
+
 });

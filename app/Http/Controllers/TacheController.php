@@ -19,7 +19,7 @@ class TacheController extends Controller
 
             return response(
                 [
-                    'foyers' => $foyer->tache()->select("id", "name")->orderBy('name', 'desc')->get()
+                    'taches' => $foyer->tache()->select("id", "name", "color")->orderBy('name', 'desc')->get()
                 ]
             );
         }
@@ -29,6 +29,7 @@ class TacheController extends Controller
             // validation
             $valid = $request->validate([
                 'name' => 'required|string',
+                'color' => 'required',
             ]);
 
             $foyer = Foyer::find($id);
@@ -47,6 +48,7 @@ class TacheController extends Controller
     
             $tache = Tache::create([
                 'name' => $valid['name'],
+                'color' => $valid['color'],
                 'foyer_id' => $id
             ]);
     

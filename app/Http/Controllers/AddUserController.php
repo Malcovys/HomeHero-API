@@ -24,7 +24,7 @@ class AddUserController extends Controller
         }
 
         return response([
-            'message' => 'Ces utilisateurs ont été ajouté dans le foyer',
+            'message' => $user,
         ],200);
     }
 

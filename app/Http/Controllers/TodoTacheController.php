@@ -40,7 +40,7 @@ class TodoTacheController extends Controller
 
     //Obtenir la tache d'un utilisateur pendant un jour
     public function getUserTache($foyer_id, $date) {
-        $allTache = Tache::orderBy('name', 'asc')->select('id', 'name')->where('foyer_id','=', $foyer_id)->get();
+        $allTache = Tache::orderBy('name', 'asc')->select('id', 'name', 'color')->where('foyer_id','=', $foyer_id)->get();
         $allUser = User::orderBy('name', 'desc')->where('foyer_id','=', $foyer_id)->get();
 
         $nbrTache = $allTache->count();
@@ -52,7 +52,7 @@ class TodoTacheController extends Controller
         // Réorganiser les taches
         if($nbrTache <= $nbrUser) {
             foreach ($allUser as $k => $user) {
-                $newAllTache[$k] = isset($allTache[$k]) ? $allTache[$k]->name : 'Aucun';
+                $newAllTache[$k] = isset($allTache[$k]) ? $allTache[$k]->id. '-' .$allTache[$k]->name. '-' .$allTache[$k]->color : 'Aucun-red';
 
             }
 
@@ -64,7 +64,7 @@ class TodoTacheController extends Controller
                 if (!isset($newAllTache[$userIndex])) {
                     $newAllTache[$userIndex] = [];
                 }
-                $newAllTache[$userIndex][] = $tache->name;
+                $newAllTache[$userIndex][] = $tache->id. '-' .$tache->name. '-' .$tache->color;
             }
             $date++;
         }
@@ -76,7 +76,10 @@ class TodoTacheController extends Controller
 
             if(!isset($newAllTache[$key + $date])){
                 $result[]= [
-                    "user" => $user->name,
+                    "user" => [
+                        "id" =>$user->id,
+                        "name" =>$user->name
+                    ],
                     // "tache" =>($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : ["Un imprévu est survenu."]
                     "tache" => $nbrTache <= $nbrUser 
                         ? (($key + $date - $nbrUser >= 0) ? [$newAllTache[$key + $date - $nbrUser]] : ["Un imprévu est survenu."])
@@ -87,7 +90,10 @@ class TodoTacheController extends Controller
             }
             else{
                 $result[]= [
-                    "user" => $user->name,
+                    "user" => [
+                        "id" =>$user->id,
+                        "name" =>$user->name
+                    ],
                     "tache" => $nbrTache <= $nbrUser 
                         ? [$newAllTache[$key + $date]]
                         : $newAllTache[$key + $date]
