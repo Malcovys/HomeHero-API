@@ -15,6 +15,8 @@ class Historique extends Model
         'id',
         'user_id',
         'tache_id',
+        'state',
+        'user_confirm_id'
     ];
 
     //One to Many et son inverse est hasMany
@@ -24,6 +26,6 @@ class Historique extends Model
 
     //Many to Many
     public function taches() {
-        return $this->belongsToMany(Tache::class);
+        return $this->belongsToMany(Tache::class)->select('taches.id', 'taches.name');
     }
 }

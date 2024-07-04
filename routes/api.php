@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //Marquer comme fini une tache
     Route::post('/historique', [HistoriqueController::class, 'historique']);
-    Route::get('historique', [HistoriqueController::class, 'confirmation']);
+    Route::get('/historique', [HistoriqueController::class, 'Listconfirmation']);
+    Route::post('/confirmer', [HistoriqueController::class, 'confirmer']);
 
 });

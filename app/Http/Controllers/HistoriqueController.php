@@ -9,7 +9,7 @@ use App\Models\User;
 
 class HistoriqueController extends Controller
 {
-    public $foyer_id;
+    public $user_confirm_id, $foyer_id;
 
     // Marquer une tache comme réalisée
     public function historique(Request $request)
@@ -40,24 +40,42 @@ class HistoriqueController extends Controller
     }
 
     // Obtenir les historique à confirmer
-    public function confirmation()
+    public function Listconfirmation()
     {
         $this->foyer_id = auth()->user()->foyer_id;
 
-        // $historique = Historique::with("user","taches")->get();
-        // $historique = Historique::join('users', 'historiques.user_id', '=', 'users.id')
-        //                         ->where('users.foyer_id', $this->foyer_id)
-        //                         ->with(['user', 'taches'])
-        //                         ->get(['historiques.*']);
-
         $historique = Historique::join('users', 'historiques.user_id', '=', 'users.id')
-                                ->where('users.foyer_id', $this->foyer_id)
-                                ->with(['user:id,name', 'taches:id,name'])
-                                ->get(['historiques.*']);
-
+                        ->where('users.foyer_id', $this->foyer_id)
+                        ->with(['user:id,name', 'taches'])
+                        ->get(['historiques.id', 'historiques.user_id', 'historiques.state']);
 
 
         return response()->json($historique, 200);
+
+    }
+
+    public function confirmer(Request $request)
+    {
+        $validated = $request->validate([
+            'historique_id' => 'required|int',
+        ]);
+
+        $historique = Historique::Where("id", $validated['historique_id'])->first();
+        
+        if (!$historique) {
+            return response([
+                'message' => 'Historique inexistante',
+            ],403);
+        }
+
+        $historique->update([
+            "state" => true,
+            "user_confirm_id" => auth()->user()->id
+        ]);
+
+        return response([
+            "historique" => $historique
+        ],200);
 
     }
     
