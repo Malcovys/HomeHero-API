@@ -76,7 +76,6 @@ class HistoriqueController extends Controller
         return response([
             "historique" => $historique
         ],200);
-
     }
     
 }

@@ -42,6 +42,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/allUser', [UserController::class, 'allUser']);
     //Obtenir tous les utilisateurs qui sont dans le foyer
     Route::get('/foyer/{id}/allMembre', [UserController::class, 'allMembre']);
+    //Activer ou désactiver un utilisateur
+    Route::post('/active', [UserController::class, 'active']);
 
 
     //Foyer

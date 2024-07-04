@@ -28,4 +28,39 @@ class UserController extends Controller
                 ]
             );
         }
+
+
+        // Désactiver un utilisateur
+        public function active(Request $request) {
+
+            $validated = $request->validate([
+                'userId' => 'required|int',
+            ]);
+
+            $user = User::Where("id",$validated["userId"])->first();
+        
+            if (!$user) {
+                return response([
+                    'message' => "Cet utilisateur n'existe pas",
+                ],403);
+            }
+            else if($user->foyer_id == null) {
+                return response([
+                    'message' => "Cet utilisateur n'est pas dans ce foyer",
+                ],403);
+            }
+            else if($user->foyer->admin_id !== auth()->user()->id) {
+                return response([
+                    'message' => "L'utislisateur n'a pas accès à cela",
+                ],403);
+            }
+
+            $user->update([
+                "active" => !$user->active,
+            ]);
+            
+            return response([
+                "user" => $user->active
+            ],200);
+        }
 }
