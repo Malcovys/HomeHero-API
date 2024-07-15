@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Tache;
 use App\Models\Foyer;
 use App\Models\User;
+use App\Models\Historique;
+use Carbon\Carbon;
 
 class TodoTacheController extends Controller
 {
@@ -41,7 +43,7 @@ class TodoTacheController extends Controller
     //Obtenir la tache d'un utilisateur pendant un jour
     public function getUserTache($foyer_id, $date) {
         $allTache = Tache::orderBy('name', 'asc')->select('id', 'name', 'color')->where('foyer_id','=', $foyer_id)->get();
-        $allUser = User::orderBy('name', 'desc')->where('foyer_id','=', $foyer_id)->get();
+        $allUser = User::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->where('active', true)->get();
 
         $nbrTache = $allTache->count();
         $nbrUser = $allUser->count();
@@ -70,6 +72,7 @@ class TodoTacheController extends Controller
         }
 
 
+
         //Pendant un jour, il se peut que cetains utilisateurs n'ont pas de tache si le nbr de user > nbr tache
         //Dans le cas contraire, tous les utilisateurs ont un ou plusieurs taches par jour
         foreach ($allUser as $key => $user) {
@@ -80,12 +83,13 @@ class TodoTacheController extends Controller
                         "id" =>$user->id,
                         "name" =>$user->name
                     ],
+                    "state" => $this->checkInHistorique($user->id),
+
                     // "tache" =>($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : ["Un imprévu est survenu."]
                     "tache" => $nbrTache <= $nbrUser 
                         ? (($key + $date - $nbrUser >= 0) ? [$newAllTache[$key + $date - $nbrUser]] : ["Un imprévu est survenu."])
                         : (($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : ["Un imprévu est survenu."])
 
-                
                 ];
             }
             else{
@@ -94,6 +98,8 @@ class TodoTacheController extends Controller
                         "id" =>$user->id,
                         "name" =>$user->name
                     ],
+                    "state" => $this->checkInHistorique($user->id),
+
                     "tache" => $nbrTache <= $nbrUser 
                         ? [$newAllTache[$key + $date]]
                         : $newAllTache[$key + $date]
@@ -105,6 +111,16 @@ class TodoTacheController extends Controller
         }
         return $result;
         
+    }
+
+
+    public function checkInHistorique(int $userId) {
+        $historique = Historique::
+        Where("user_id", $userId)
+        ->whereDate("created_at", Carbon::today())
+        ->first();
+
+        return $historique?true:false;
     }
 
 

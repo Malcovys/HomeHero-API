@@ -6,13 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Foyer;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
     public function essais() {
         $foyer = Foyer::find(1);
+        $today = Carbon::today();
         return response([
             'message' => $foyer->user,
+            'date' => Carbon::today()->toDateString()
         ]);
     }
     // Register
@@ -48,7 +51,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($valid)) {
             return response([
-                'message' => 'Invalid credentials',
+                'errors' => 'Identifiant incorrect',
             ], 403);
         }
 
@@ -70,13 +73,20 @@ class AuthController extends Controller
     // Get user details
     public function user() {
         $user = auth()->user();
+        
+        $foyer = Foyer::Where("admin_id", auth()->user()->id)->first();
+
         return response()->json([
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'foyer_id' => $user->foyer_id,
                 'email' => $user->email,
-                'foyer' =>  $user->foyer
+                'foyer' =>  $user->foyer,
+                'active' =>  $user->active,
+                'mode' =>  $user->mode,
+                'profil' =>  $user->profil,
+                'accountType' =>  $foyer?"admin":"user"
             ],
         ]);
     }

@@ -23,7 +23,10 @@ class User extends Authenticatable
         'email',
         'image',
         'password',
-        'active'
+        'foyer_id',
+        'active',
+        'mode',
+        'profil'
     ];
 
     /**

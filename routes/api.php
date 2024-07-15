@@ -44,6 +44,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/foyer/{id}/allMembre', [UserController::class, 'allMembre']);
     //Activer ou désactiver un utilisateur
     Route::post('/active', [UserController::class, 'active']);
+    //Changer l'admin du foyer
+    Route::post('/changeAdmin', [UserController::class, 'changeAdmin']);
+    Route::post('/updateUserPreference', [UserController::class, 'updateUserPreference']);
+    Route::post('/updateUser', [UserController::class, 'updateUser']);
 
 
     //Foyer
@@ -57,7 +61,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/foyer/{id}/tache', [TacheController::class, 'index']);
     Route::post('/foyer/{id}/tache', [TacheController::class, 'store']);
     Route::put('/tache/{id}', [TacheController::class, 'update']);
-    Route::delete('/tache/{id}', [TacheController::class, 'delete']);
+    Route::delete('/deleteTache', [TacheController::class, 'delete']);
 
 
     //Tache à faire
@@ -65,7 +69,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //Ajouter un utilisateur dans un foyer
     Route::post('/foyer/{id}/addUser', [AddUserController::class, 'addUser']);
-    Route::delete('/addUser/{id}', [AddUserController::class, 'deleteUser']);
+    Route::delete('/removeUser', [AddUserController::class, 'removeUser']);
 
     //Marquer comme fini une tache
     Route::post('/historique', [HistoriqueController::class, 'historique']);

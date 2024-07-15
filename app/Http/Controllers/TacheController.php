@@ -19,7 +19,7 @@ class TacheController extends Controller
 
             return response(
                 [
-                    'taches' => $foyer->tache()->select("id", "name", "color")->orderBy('name', 'desc')->get()
+                    'taches' => $foyer->tache()->select("id", "name", "color")->orderBy('id', 'desc')->get()
                 ]
             );
         }
@@ -52,10 +52,10 @@ class TacheController extends Controller
                 'foyer_id' => $id
             ]);
     
-            return response([
-                'message' => 'La tache a été crée',
-                'tache' => $tache
-            ],200);
+            return response(
+                Tache::Where("id", $tache->id)->select("id", "name", "color")->first(),
+                200
+            );
         }
     
         // Mettre à jour une tache
@@ -89,8 +89,12 @@ class TacheController extends Controller
         }
     
         // // Supprimer la tache
-        public function delete($id){
-            $tache = Tache::find($id);
+        public function delete(Request $request){
+            $validated = $request->validate([
+                'tacheId' => 'required|int',
+            ]);
+
+            $tache = Tache::find($validated["tacheId"]);
     
             if($tache->foyer->admin_id !== auth()->user()->id) {
                 return response([

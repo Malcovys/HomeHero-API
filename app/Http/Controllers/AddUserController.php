@@ -29,9 +29,12 @@ class AddUserController extends Controller
     }
 
     //Supprimer un utilisateur du foyer
-    public function deleteUser(int $id) {
+    public function removeUser(Request $request) {
+        $validated = $request->validate([
+            'userId' => 'required|int',
+        ]);
 
-        $user = User::find($id);
+        $user = User::find($validated['userId']);
         
         if ($user->foyer_id== null) {
             return response([
@@ -49,11 +52,14 @@ class AddUserController extends Controller
             ],403);
         }
 
-        $user->foyer_id = null;
-        $user->save(); 
+        $user->update([
+            "foyer_id" => null,
+            "active" => true
+        ]);
 
         return response([
             'message' => 'Utilisateur retiré du foyer',
+            "user" => $user
         ],200);
     }
 }

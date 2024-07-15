@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Tache;
 use App\Models\Historique;
 use App\Models\User;
+use Carbon\Carbon;
 
 class HistoriqueController extends Controller
 {
@@ -44,10 +45,13 @@ class HistoriqueController extends Controller
     {
         $this->foyer_id = auth()->user()->foyer_id;
 
-        $historique = Historique::join('users', 'historiques.user_id', '=', 'users.id')
-                        ->where('users.foyer_id', $this->foyer_id)
-                        ->with(['user:id,name', 'taches'])
-                        ->get(['historiques.id', 'historiques.user_id', 'historiques.state']);
+
+    $historique = Historique::join('users', 'historiques.user_id', '=', 'users.id')
+        ->where('users.foyer_id', $this->foyer_id)
+        ->whereDate('historiques.created_at', Carbon::today())
+        ->with(['user:id,name,email', 'taches'])
+        ->get(['historiques.id', 'historiques.user_id', 'historiques.state']);
+
 
 
         return response()->json($historique, 200);
