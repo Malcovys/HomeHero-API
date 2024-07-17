@@ -50,7 +50,7 @@ class HistoriqueController extends Controller
         ->where('users.foyer_id', $this->foyer_id)
         ->whereDate('historiques.created_at', Carbon::today())
         ->with(['user:id,name,email', 'taches'])
-        ->get(['historiques.id', 'historiques.user_id', 'historiques.state']);
+        ->get(['historiques.id', 'historiques.user_id', 'historiques.user_confirm_id', 'historiques.state']);
 
 
 
