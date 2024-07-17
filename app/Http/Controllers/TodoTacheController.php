@@ -54,7 +54,7 @@ class TodoTacheController extends Controller
         // Réorganiser les taches
         if($nbrTache <= $nbrUser) {
             foreach ($allUser as $k => $user) {
-                $newAllTache[$k] = isset($allTache[$k]) ? $allTache[$k]->id. '-' .$allTache[$k]->name. '-' .$allTache[$k]->color : "1-Vous n'avez pas de tache 😊-4279793650";
+                $newAllTache[$k] = isset($allTache[$k]) ? $allTache[$k]->id. '-' .$allTache[$k]->name. '-' .$allTache[$k]->color : "-1-Vous n'avez pas de tache 😊-4279793650";
 
             }
 
