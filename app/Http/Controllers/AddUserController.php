@@ -80,8 +80,65 @@ class AddUserController extends Controller
             $data
         );
     }
-    
 
+    public function removeFromGroupe(Request $request) {
+        $validated = $request->validate([
+            'userId' => 'required|int',
+        ]);
+
+        $user = User::find($validated['userId']);
+        
+        if ($user->foyer_id== null) {
+            return response([
+                'message' => "Cet utilisateur n'est pas dans ce foyer",
+            ],403);
+        }
+        if($user->foyer->admin_id !== auth()->user()->id) {
+            return response([
+                'message' => "L'utislisateur n'a pas accès à cela",
+            ],403);
+        }
+        if (!$user) {
+            return response([
+                'message' => 'User inconnu',
+            ],403);
+        }
+
+        $user->update([
+            "groupe_id" => null,
+        ]);
+
+        return response([
+            'message' => 'Utilisateur retiré du groupe',
+            "user" => $user
+        ],200);
+    }
+    
+    public function deleteGroupe(Request $request){
+        $validated = $request->validate([
+            'groupeId' => 'required|int',
+        ]);
+
+        $groupe = Groupe::find($validated["groupeId"]);
+
+        // if($groupe->foyer->admin_id !== auth()->user()->id) {
+        //     return response([
+        //         'message' => "L'utislisateur n'a pas accès à cela",
+        //     ],403);
+        // }
+
+        if (!$groupe) {
+            return response([
+                'message' => 'Groupe inconnu',
+            ],403);
+        }
+
+        $groupe -> delete();
+
+        return response([
+            'message' => 'groupe supprimé',
+        ],200);
+    }
 
     //Supprimer un utilisateur du foyer
     public function removeUser(Request $request) {

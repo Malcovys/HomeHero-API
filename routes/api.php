@@ -52,6 +52,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //Grouper les utilisateurs
     Route::post('/createGroupe', [AddUserController::class, 'createGroupe']);
     Route::get('/getListGroupe', [AddUserController::class, 'getListGroupe']);
+    Route::delete('/removeFromGroupe', [AddUserController::class, 'removeFromGroupe']);
+    Route::delete('/deleteGroupe', [AddUserController::class, 'deleteGroupe']);
     
 
     //Foyer
