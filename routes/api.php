@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //Obtenir tous les utilisateurs qui ne sont pas encore dans un foyer
     Route::get('/allUser', [UserController::class, 'allUser']);
     //Obtenir tous les utilisateurs qui sont dans le foyer
-    Route::get('/foyer/{id}/allMembre', [UserController::class, 'allMembre']);
+    Route::post('/foyer/{id}/allMembre', [UserController::class, 'allMembre']);
     //Activer ou désactiver un utilisateur
     Route::post('/active', [UserController::class, 'active']);
     //Changer l'admin du foyer
@@ -49,6 +49,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/updateUserPreference', [UserController::class, 'updateUserPreference']);
     Route::post('/updateUser', [UserController::class, 'updateUser']);
 
+    //Grouper les utilisateurs
+    Route::post('/createGroupe', [AddUserController::class, 'createGroupe']);
+    Route::get('/getListGroupe', [AddUserController::class, 'getListGroupe']);
+    
 
     //Foyer
     Route::get('/foyer', [FoyerController::class, 'index']);

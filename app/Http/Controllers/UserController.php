@@ -20,16 +20,30 @@ class UserController extends Controller
             );
         }
         //Afficher tous les membres du foyer
-        public function allMembre(int $id) {
+        public function allMembre(Request $request, int $id)
+        {
+            $validated = $request->validate([
+                'groupeId' => 'nullable|int',
+            ]);
 
-            $allUser = User::select("id", "name", "email", "active", "profil")->where('foyer_id', $id)->orderBy('name', 'desc')->get();
+            $allUserQuery = User::select("id", "name", "email", "active", "profil")
+                ->where('foyer_id', $id)
+                ->orderBy('name', 'desc');
 
-            return response(
-                [
-                    'users' => $allUser
-                ]
-            );
+            if (isset($validated['groupeId'])) {
+                $allUserQuery->where('groupe_id', $validated['groupeId']);
+            }
+            else{
+                $allUserQuery->where('groupe_id', null);
+            }
+
+            $allUser = $allUserQuery->get();
+
+            return response([
+                'users' => $allUser
+            ]);
         }
+
 
 
         // Activer ou Désactiver un utilisateur

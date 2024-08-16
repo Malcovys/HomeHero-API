@@ -19,7 +19,6 @@ class FoyerController extends Controller
 
     // Créer un foyer
     public function store(Request $request) {
-        // validation
         $valid = $request->validate([
             'name' => 'required|string',
         ]);
@@ -27,15 +26,12 @@ class FoyerController extends Controller
         // Créer un foyer
         $foyer = Foyer::create([
             'name' => $valid['name'],
-            
-            //Récupérer l'id de l'utilisateur connecté
             'admin_id' => auth()->user()->id
         ]);
 
         auth()->user()->foyer_id = $foyer->id;
         auth()->user()->save(); 
 
-        // retourner le foyer
         return response([
             'message' => 'Foyer created',
             'foyer' => $foyer

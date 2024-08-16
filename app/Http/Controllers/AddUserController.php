@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Groupe;
 
 class AddUserController extends Controller
 {
@@ -27,6 +28,60 @@ class AddUserController extends Controller
             'message' => $user,
         ],200);
     }
+
+
+    public function createGroupe(Request $request) {
+        $valid = $request->validate([
+            'name' => 'required|string|max:255',
+            'usersId' => 'array|required',  
+        ]);
+    
+        // Création du groupe 
+        $groupe = Groupe::create([
+            'name' => $valid['name'],  
+            'foyer_id' => auth()->user()->foyer_id,  
+        ]);
+    
+        // Attribution des utilisateurs au groupe
+        foreach ($valid['usersId'] as $user_id) {
+            $user = User::find($user_id);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Utilisateur inconnu',
+                ], 404); 
+            }
+    
+            $user->groupe_id = $groupe->id;
+            $user->save(); 
+        }
+    
+        return response([
+            'id' => $groupe->id,
+            'name' => $groupe->name,
+            'image' => $groupe->users()->pluck("profil"),
+            'nbrMembres' => count($groupe->users()->get()),
+        ], 200);
+    }
+
+    public function getListGroupe() {
+
+        $groupes = Groupe::where('foyer_id', auth()->user()->foyer_id)->orderBy('id', 'asc')->get();
+
+        foreach($groupes as $groupe){
+            $data[] = [
+                'id' => $groupe->id,
+                'name' => $groupe->name,
+                'image' => $groupe->users()->pluck("profil"),
+                'nbrMembres' => count($groupe->users()->get()),
+            ];
+        }
+
+        return response(
+            $data
+        );
+    }
+    
+
 
     //Supprimer un utilisateur du foyer
     public function removeUser(Request $request) {
@@ -54,6 +109,7 @@ class AddUserController extends Controller
 
         $user->update([
             "foyer_id" => null,
+            "groupe_id" => null,
             "active" => true
         ]);
 

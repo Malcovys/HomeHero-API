@@ -26,7 +26,8 @@ class User extends Authenticatable
         'foyer_id',
         'active',
         'mode',
-        'profil'
+        'profil',
+        'groupe_id'
     ];
 
     /**

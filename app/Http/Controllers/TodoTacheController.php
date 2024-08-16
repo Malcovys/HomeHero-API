@@ -7,6 +7,7 @@ use App\Models\Tache;
 use App\Models\Foyer;
 use App\Models\User;
 use App\Models\Historique;
+use App\Models\Groupe;
 use Carbon\Carbon;
 
 class TodoTacheController extends Controller
@@ -44,7 +45,13 @@ class TodoTacheController extends Controller
     public function getUserTache($foyer_id, $date) {
         $allTache = Tache::orderBy('name', 'asc')->select('id', 'name', 'color')->where('foyer_id','=', $foyer_id)->get();
         $allUser = User::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->where('active', true)->get();
-
+        $allGroupe = Groupe::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->get();
+        
+        
+        if($allGroupe->isNotEmpty()){
+            $allUser = $allGroupe;
+        }
+        
         $nbrTache = $allTache->count();
         $nbrUser = $allUser->count();
         $newAllTache = [];
@@ -81,9 +88,13 @@ class TodoTacheController extends Controller
                 $result[]= [
                     "user" => [
                         "id" =>$user->id,
-                        "name" =>$user->name
+                        "name" =>$user->name,
+                        "usersIdInGroupe" => $allGroupe->isNotEmpty() ? $allGroupe[$key]->users()->pluck("id") : [$user->id],
+
                     ],
                     "state" => $this->checkInHistorique($user->id),
+
+
 
                     // "tache" =>($key + $date - $nbrUser >= 0) ? $newAllTache[$key + $date - $nbrUser] : ["Un imprévu est survenu."]
                     "tache" => $nbrTache <= $nbrUser 
@@ -96,9 +107,12 @@ class TodoTacheController extends Controller
                 $result[]= [
                     "user" => [
                         "id" =>$user->id,
-                        "name" =>$user->name
+                        "name" =>$user->name,
+                        "usersIdInGroupe" => $allGroupe->isNotEmpty() ? $allGroupe[$key]->users()->pluck("id") : [$user->id],
+
                     ],
                     "state" => $this->checkInHistorique($user->id),
+
 
                     "tache" => $nbrTache <= $nbrUser 
                         ? [$newAllTache[$key + $date]]
