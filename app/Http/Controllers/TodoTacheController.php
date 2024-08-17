@@ -49,7 +49,21 @@ class TodoTacheController extends Controller
         
         
         if($allGroupe->isNotEmpty()){
-            $allUser = $allGroupe;
+            // $userNotInGroupe = User::orderBy('id', 'asc')
+            //     ->where('foyer_id','=', $foyer_id)
+            //     ->where('groupe_id', null)
+            //     ->where('active', true)
+            //     ->get();
+
+            // $allUser = $allGroupe;
+            $userNotInGroupe = User::orderBy('id', 'asc')
+                ->where('foyer_id', '=', $foyer_id)
+                ->where('groupe_id', null)
+                ->where('active', true)
+                ->get();
+
+            // Fusionner les utilisateurs dans les groupes et ceux qui ne sont pas dans un groupe
+            $allUser = $allGroupe->merge($userNotInGroupe);
         }
         
         $nbrTache = $allTache->count();
@@ -89,7 +103,11 @@ class TodoTacheController extends Controller
                     "user" => [
                         "id" =>$user->id,
                         "name" =>$user->name,
-                        "usersIdInGroupe" => $allGroupe->isNotEmpty() ? $allGroupe[$key]->users()->pluck("id") : [$user->id],
+                        "usersIdInGroupe" => $allGroupe->isNotEmpty() ? 
+                            isset($allGroupe[$key])?
+                                $allGroupe[$key]->users()->pluck("id") 
+                                :[$user->id]
+                        : [$user->id],
 
                     ],
                     "state" => $this->checkInHistorique($user->id),
@@ -108,8 +126,12 @@ class TodoTacheController extends Controller
                     "user" => [
                         "id" =>$user->id,
                         "name" =>$user->name,
-                        "usersIdInGroupe" => $allGroupe->isNotEmpty() ? $allGroupe[$key]->users()->pluck("id") : [$user->id],
-
+                        // "usersIdInGroupe" => $allGroupe->isNotEmpty() ? $allGroupe[$key]->users()->pluck("id") : [$user->id],
+                        "usersIdInGroupe" => $allGroupe->isNotEmpty() ? 
+                                                    isset($allGroupe[$key])?
+                                                        $allGroupe[$key]->users()->pluck("id") 
+                                                        :[$user->id]
+                                                : [$user->id],
                     ],
                     "state" => $this->checkInHistorique($user->id),
 
