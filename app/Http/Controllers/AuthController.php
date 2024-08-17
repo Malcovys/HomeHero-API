@@ -80,7 +80,7 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'foyer_id' => $user->foyer_id,
+                'foyer_id' => isset($user->foyer_id) ? $user->foyer_id : 0,
                 'email' => $user->email,
                 'foyer' =>  $user->foyer,
                 'active' =>  $user->active,

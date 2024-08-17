@@ -21,16 +21,16 @@ class TodoTacheController extends Controller
         $foyer = Foyer::find($id);
 
 
-        if($id !== auth()->user()->foyer_id) {
+        if($id !== auth()->user()->foyer_id || auth()->user()->foyer_id == null) {
             return response([
-                'message' => "L'utislisateur n'a pas accès à cela",
+                'message' => "unauthorized",
             ],403);
         }
 
         if (!$foyer) {
             return response([
                 'message' => 'Foyer inconnu',
-            ],403);
+            ],404);
         }
     
     
@@ -45,7 +45,16 @@ class TodoTacheController extends Controller
     public function getUserTache($foyer_id, $date) {
         $allTache = Tache::orderBy('name', 'asc')->select('id', 'name', 'color')->where('foyer_id','=', $foyer_id)->get();
         $allUser = User::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->where('active', true)->get();
-        $allGroupe = Groupe::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->get();
+        // $allGroupe = Groupe::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->get();
+        
+
+        $allGroupe = Groupe::orderBy('id', 'asc')
+        ->where('foyer_id', '=', $foyer_id)
+        ->whereHas('users', function ($query) {
+            $query->whereColumn('groupe_id', 'groupes.id');
+        })
+        ->get();
+
         
         
         if($allGroupe->isNotEmpty()){
@@ -62,7 +71,7 @@ class TodoTacheController extends Controller
                 ->where('active', true)
                 ->get();
 
-            // Fusionner les utilisateurs dans les groupes et ceux qui ne sont pas dans un groupe
+            // Fusionner dans les utilisateurs, la liste des groupes et ceux qui ne sont pas dans un groupe
             $allUser = $allGroupe->merge($userNotInGroupe);
         }
         
@@ -145,6 +154,14 @@ class TodoTacheController extends Controller
             }
 
         }
+        //Réorganiser pour afficher l'user connecté en haut
+        $connectedUserId = auth()->id(); 
+        usort($result, function($a, $b) use ($connectedUserId) {
+            $aHasUserId = in_array($connectedUserId, collect($a['user']['usersIdInGroupe'])->toArray());
+            $bHasUserId = in_array($connectedUserId, collect($b['user']['usersIdInGroupe'])->toArray());
+
+            return $bHasUserId <=> $aHasUserId;
+        });
         return $result;
         
     }
