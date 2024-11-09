@@ -5,16 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Groupe extends Model
+class House extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'foyer_id',
+        'logo',
     ];
-
-    public function users() {
-        return $this->hasMany(User::class);
-    }
 }

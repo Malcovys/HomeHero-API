@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Foyer;
 
 class User extends Authenticatable
 {
@@ -19,15 +18,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'image',
-        'password',
-        'foyer_id',
-        'active',
-        'mode',
-        'profil',
-        'groupe_id'
+        'name', 'email', 'image',
+        'house_id', 'role_id',
+        'activate', 'password'
     ];
 
     /**
@@ -49,9 +42,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-
-    public function foyer() {
-        return $this->belongsTo(Foyer::class);
-    }
 }
