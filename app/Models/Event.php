@@ -16,4 +16,8 @@ class Event extends Model
         'description',
         'date',
     ];
+
+    public function house(): BelongsTo {
+        return $this->belongsTo(House::class);
+    }
 }
