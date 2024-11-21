@@ -12,5 +12,11 @@ class Role extends Model
     protected $fillable = [
         'name',
         'house_id',
+        'namage_priv_priv',
+        'manage_house_priv',
+        'manage_member_priv',
+        'manage_task_priv',
+        'manage_even_priv',
+        'manage_priv_priv',
     ];
 }
