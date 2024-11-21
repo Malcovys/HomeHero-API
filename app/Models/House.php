@@ -13,6 +13,7 @@ class House extends Model
     protected $fillable = [
         'name',
         'logo',
+        'archived',
     ];
 
     public function event(): HasMany {

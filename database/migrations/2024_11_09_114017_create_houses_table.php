@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->String('logo')->nullable();
+            $table->string('logo')->nullable();
+            $table->boolean('archived')->default(true);
             $table->timestamps();
         });
     }
