@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('house_id')->constrained('houses')->cascadeOnDelete();
             $table->integer('frequency');
             $table->integer('member_required');
+            $table->boolean('activated')->default(true);
             $table->timestamps();
         });
     }
