@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('emblem_url')->nullable();
+            $table->boolean('automatise_task_management')->default(true);
             $table->timestamps();
         });
     }
