@@ -24,6 +24,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     // Houses
     Route::prefix('/house')->group(function() {
-        Route::post('/create', [HouseController::class, 'createHouse']);
+        Route::post('/create', [HouseController::class, 'create']);
     });
 });

@@ -14,11 +14,10 @@ class Role extends Model
     protected $fillable = [
         'name',
         'house_id',
-        'manage_priv_priv',
+        'manage_role_priv',
         'manage_house_priv',
         'manage_member_priv',
         'manage_task_priv',
-        'manage_priv_priv',
     ];
 
     public function house(): BelongsTo {

@@ -13,19 +13,22 @@ use Illuminate\Support\Facades\Auth;
 class HouseController extends Controller
 {
     public function create(Request $request) {
-        $house = $request->validate([
-            'name' => 'required|unique:houses',
-        ]);
+        try {
+            $house = $request->validate([
+                'name' => 'required|unique:houses',
+            ]);
+        } catch(\Exception $exception) {
+            return response()->json(['error'=> $exception->getMessage()], 400);
+        }
 
         // Only users haven't house can create one
         $user = User::find(Auth::id())->whereNull('house_id')->first();
-        
         if (!$user) {
-            abort(401, 'User already have a house.');
+            return response()->json(['error' => 'User already have a house.'], 401);
         }
 
         // House creation
-        DB::transacion(function () use ($house, $user) {
+        DB::transaction(function () use ($house, $user) {
             $houseData = House::create($house);
 
             // First house role creation 
@@ -45,7 +48,7 @@ class HouseController extends Controller
             ]);
         });
          
-        return response()->json(['message' => 'House created successfully.']);
+        return response()->json(['message' => 'House created with successfully.']);
     }
     
     public function rename(Request $request) {
@@ -56,7 +59,7 @@ class HouseController extends Controller
         }
 
         $houseData = $request->validate([
-            'new_name' => 'required|string',
+            'new_name' => 'required|unique:houses',
         ]);
 
         $house = House::find(Auth::user()->house_id)->first();
