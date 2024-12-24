@@ -23,5 +23,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
     // Houses
-    Route::post('/house', [HouseController::class, 'createHouse']);
+    Route::prefix('/house')->group(function() {
+        Route::post('/create', [HouseController::class, 'createHouse']);
+    });
 });
