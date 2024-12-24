@@ -15,9 +15,11 @@ class HouseConfigSeeder extends Seeder
     {
         DB::table('house_configs')->insert([
             [
+                'name' => 'auto',
                 'automatise_task_management' => true
             ],
             [
+                'name' => 'manual',
                 'automatise_task_management' => false
             ],
         ]);

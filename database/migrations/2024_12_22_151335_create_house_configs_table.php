@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('house_configs', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->boolean('automatise_task_management')->default(true);
         });
     }

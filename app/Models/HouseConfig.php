@@ -14,7 +14,7 @@ class HouseConfig extends Model
         'automatise_task_management',
     ];
 
-    public function house():HasMany {
+    public function houses():HasMany {
         return $this->hasMany(House::class);
     }
 }
