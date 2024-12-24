@@ -14,14 +14,14 @@ class HouseController extends Controller
 {
     public function createHouse(Request $request) {
         $house = $request->validate([
-            'name' => 'required|max:55|unique:houses',
+            'name' => 'required|unique:houses',
         ]);
 
         // Only users haven't house can create one
         $user = User::find(Auth::id())->whereNull('house_id')->first();
         
         if (!$user) {
-            abort(401, 'User already has a house.');
+            abort(401, 'User already have a house.');
         }
 
         // House creation
@@ -32,12 +32,10 @@ class HouseController extends Controller
             $role = Role::create([
                 'name' => 'master',
                 'house_id' => $houseData->id,
-                'nanage_priv_priv' => true,
-                'manage_priv_priv' => true,
+                'manage_role_priv' => true,
                 'manage_house_priv' => true,
                 'manage_member_priv' => true,
                 'manage_task_priv' => true,
-                'manage_even_priv' => true,
             ]);
 
             // Assing house to creator

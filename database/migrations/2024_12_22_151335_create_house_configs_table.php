@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('house_configs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('house_id')->constrained('houses')->cascadeOnDelete();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->date('date');
+            $table->boolean('automatise_task_management')->default(true);
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('house_configs');
     }
 };

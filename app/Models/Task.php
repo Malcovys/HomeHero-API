@@ -15,15 +15,14 @@ class Task extends Model
         'name',
         'house_id',
         'frequency',
-        'member_required',
-        'activated',
+        'member_required'
     ];
 
     public function house(): BelongsTo {
         return $this->belongsTo(House::class);
     }
 
-    public function userTask(): HasMany {
+    public function userTasks(): HasMany {
         return $this->hasMany(UserTask::class);
     }
 }

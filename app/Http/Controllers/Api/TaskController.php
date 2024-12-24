@@ -23,8 +23,12 @@ class TaskController extends Controller
 
     }
 
-    public function deleteTask(Request $request) {
+    public function deactiveTask(Request $request) {
 
+    }
+
+    public function activeTask(Request $request) {
+        
     }
 
     public function getTasks(Request $request) {

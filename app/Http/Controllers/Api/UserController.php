@@ -6,15 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
     public function register(Request $request) {
         $user = $request->validate([
-            'name' => 'required|max:55|unique:users',
+            'name' => 'required|unique:users',
             'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed',
+            'password' => 'required',
         ]);
 
         $user['password'] = \Illuminate\Support\Facades\Hash::make($user['password']);
@@ -31,7 +30,7 @@ class UserController extends Controller
         ]);
     
         if (!Auth::attempt($auth)) {
-            return response()->json(['authenticationError' => 'Invalid email or password'], 401);
+            abort(401, "Invalid email or password");
         }
     
         $user = Auth::user();
@@ -42,6 +41,7 @@ class UserController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
+                'photo' => $user->image,
                 'token' => $token
             ]
         ]);

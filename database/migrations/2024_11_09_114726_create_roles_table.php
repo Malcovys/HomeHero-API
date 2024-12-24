@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('house_id')->constrained('houses')->cascadeOnDelete();
-            $table->boolean('nanage_priv_priv')->default(false);
+            $table->boolean('manage_role_priv')->default(false);
             $table->boolean('manage_house_priv')->default(false);
             $table->boolean('manage_member_priv')->default(false);
             $table->boolean('manage_task_priv')->default(false);
-            $table->boolean('manage_even_priv')->default(false);
             $table->timestamps();
         });
     }

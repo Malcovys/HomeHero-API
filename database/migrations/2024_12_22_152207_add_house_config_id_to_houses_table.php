@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('houses', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('emblem_url')->nullable();
-            $table->timestamps();
+        Schema::table('houses', function (Blueprint $table) {
+            $table->foreignId('config_id')->constrained('house_configs')->cascadeOnDelete();
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('houses');
+        Schema::table('houses', function (Blueprint $table) {
+            $table->dropForeign(['config_id']);
+            $table->dropColumn('config_id');
+        });
     }
 };

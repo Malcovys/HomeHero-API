@@ -20,9 +20,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'image',
-        'house_id', 'role_id',
-        'activated', 'password'
+        'name', 
+        'email', 
+        'photo_url',
+        'house_id', 
+        'role_id',
+        'present', 
+        'password',
     ];
 
     /**
@@ -53,7 +57,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function userTask(): HasMany {
+    public function userTasks(): HasMany {
         return $this->hasMany(UserTask::class);
     }
 }
