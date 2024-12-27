@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\HouseController;
+use App\Http\Controllers\Api\HouseMemeberController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +26,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // Houses
     Route::prefix('/house')->group(function() {
         Route::post('/create', [HouseController::class, 'create']);
+
+        // Memeber
+        Route::get('/{house_id}/members', [HouseMemeberController::class, 'getAll']);
+        Route::post('{house_id}/add/{user_id}', [HouseMemeberController::class, 'add']);
     });
 });

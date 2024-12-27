@@ -10,17 +10,19 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function register(Request $request) {
-        $user = $request->validate([
-            'name' => 'required|unique:users',
-            'email' => 'email|required|unique:users',
-            'password' => 'required',
-        ]);
+        try {
+            $user = $request->validate([
+                'name' => 'required|unique:users',
+                'email' => 'email|required|unique:users',
+                'password' => 'required',
+            ]);
+        } catch(\Exception $exception) {
+            return response()->json(['error'=> $exception->getMessage()], 400);
+        }
 
         $user['password'] = \Illuminate\Support\Facades\Hash::make($user['password']);
 
         User::create($user);
-
-        return response()->json(['message' => 'User created successfully']);
     } 
 
     public function login(Request $request) {

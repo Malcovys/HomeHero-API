@@ -47,30 +47,28 @@ class HouseController extends Controller
                 'role_id' => $role->id,
             ]);
         });
-         
-        return response()->json(['message' => 'House created with successfully.']);
     }
     
-    public function rename(Request $request) {
-        $authorized_action = Role::find(Auth::user()->role_id)->get(['manage_house_priv']);
+    // public function rename(Request $request) {
+    //     $authorized_action = Role::find(Auth::user()->role_id)->get(['manage_house_priv']);
         
-        if(!$authorized_action) { 
-            abort(401,"User haven't required privilege.");
-        }
+    //     if(!$authorized_action) { 
+    //         abort(401,"User haven't required privilege.");
+    //     }
 
-        $houseData = $request->validate([
-            'new_name' => 'required|unique:houses',
-        ]);
+    //     $houseData = $request->validate([
+    //         'new_name' => 'required|unique:houses',
+    //     ]);
 
-        $house = House::find(Auth::user()->house_id)->first();
-        if(!$house) {
-            abort(401,"User haven't house.");
-        }
+    //     $house = House::find(Auth::user()->house_id)->first();
+    //     if(!$house) {
+    //         abort(401,"User haven't house.");
+    //     }
         
-        $house->update([
-            'name' => $houseData['new_name']
-        ]);
+    //     $house->update([
+    //         'name' => $houseData['new_name']
+    //     ]);
 
-        return response()->json(['message' => 'House renamed with success.']);
-    }
+    //     return response()->json(['message' => 'House renamed with success.']);
+    // }
 }
