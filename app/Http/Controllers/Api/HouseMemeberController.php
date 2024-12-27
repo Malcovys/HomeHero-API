@@ -10,22 +10,21 @@ use Illuminate\Http\Request;
 
 class HouseMemeberController extends Controller
 {
-    public function getAll(int $house_id) {
-        $authorized_action = Auth::user()->house_id == $house_id;
-        if(!$authorized_action) {
-            return response()->json(["error" => "User is not house memeber."], 401);
+    public function getAll() {
+        if(!Auth::user()->house_id) {
+            return response()->json(['error' => "User haven't house."], 401);
         }
 
-        $members = User::where('house_id', $house_id)->get();
+        $members = User::where('house_id', Auth::user()->house_id)
+                    ->get();
 
         return response()->json(['members' => $members]);
     }
     
-    public function add(int $house_id, int $user_id) {
+    public function add(int $user_id) {
         $authorized_action = User::select('roles.manage_member_priv')
                             ->join('roles', 'users.role_id', '=', 'roles.id')
                             ->where('users.id', Auth::user()->id)
-                            ->where('users.house_id', $house_id)
                             ->first();
 
         if(!$authorized_action) {
@@ -40,7 +39,7 @@ class HouseMemeberController extends Controller
             return response()->json(["error" => "User already have a house."], 400);//bad request
         }
 
-        $user->house_id = $house_id;
+        $user->house_id = Auth::user()->house_id;
         $user->save();
     }
 }

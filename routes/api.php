@@ -28,7 +28,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::post('/create', [HouseController::class, 'create']);
 
         // Memeber
-        Route::get('/{house_id}/members', [HouseMemeberController::class, 'getAll']);
-        Route::post('{house_id}/add/{user_id}', [HouseMemeberController::class, 'add']);
+        Route::prefix('/member')->group(function () {
+            Route::get('/', [HouseMemeberController::class, 'getAll']);
+            Route::post('/add/{user_id}', [HouseMemeberController::class, 'add']);
+        });
+        
     });
 });
