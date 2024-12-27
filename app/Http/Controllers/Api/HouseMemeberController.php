@@ -32,7 +32,7 @@ class HouseMemeberController extends Controller
             return response()->json(["error" => "User haven't required privilege."], 401);
         }
 
-        $user = User::find($user_id)
+        $user = User::where('id', $user_id)
                     ->whereNull('house_id')
                     ->first();
 
