@@ -15,7 +15,7 @@ class Task extends Model
         'name',
         'house_id',
         'frequency',
-        'member_required'
+        'required_members',
     ];
 
     public function house(): BelongsTo {

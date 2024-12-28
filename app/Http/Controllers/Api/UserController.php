@@ -9,6 +9,27 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function searchHouselessUser(Request $request) {
+        $query = $request->query("q");
+
+        $reuslts = array();
+        $to_selected_user_data = ['id', 'name', 'email', 'photo_url', 'created_at'];
+        if(!$query) {
+            $reuslts = User::where('house_id', null)
+                        ->get($to_selected_user_data);
+        } else {
+            $reuslts = User::whereRaw(
+                        'LOWER(name) LIKE ? AND LOWER(name) NOT LIKE ?',
+                        [
+                            '%'.strtolower($query).'%',
+                            strtolower(Auth::user()->name)
+                        ])->where('house_id', null)
+                        ->get($to_selected_user_data);
+        }
+
+        return response()->json(['results' => $reuslts]);
+    }
+
     public function register(Request $request) {
         try {
             $user = $request->validate([
@@ -17,22 +38,26 @@ class UserController extends Controller
                 'password' => 'required',
             ]);
         } catch(\Exception $exception) {
-            return response()->json(['error'=> $exception->getMessage()], 400);
+            return response()->json(['error'=> $exception->getMessage()], $exception->getCode());
         }
 
         $user['password'] = \Illuminate\Support\Facades\Hash::make($user['password']);
 
         User::create($user);
     } 
-
-    public function login(Request $request) {
-        $auth = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
     
-        if (!Auth::attempt($auth)) {
-            abort(401, "Invalid email or password");
+    public function login(Request $request) {
+        try {
+            $credential = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+        } catch(\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
+        }
+    
+        if (!Auth::attempt($credential)) {
+            return response()->json(['error' => "Invalid email or password"], 403);
         }
     
         $user = Auth::user();

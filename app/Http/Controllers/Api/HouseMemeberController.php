@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 
 class HouseMemeberController extends Controller
 {
-    public function getAll() {
+    public function getHouseMate() {
         if(!Auth::user()->house_id) {
-            return response()->json(['error' => "User haven't house."], 401);
+            return response()->json(['error' => "User haven't house."], 404);
         }
 
         $members = User::where('house_id', Auth::user()->house_id)
@@ -28,7 +28,7 @@ class HouseMemeberController extends Controller
                             ->first();
 
         if(!$authorized_action) {
-            return response()->json(["error" => "User haven't required privilege."], 401);
+            return response()->json(["error" => "User haven't autorization to add new member."], 403);
         }
 
         $user = User::where('id', $user_id)
@@ -36,10 +36,17 @@ class HouseMemeberController extends Controller
                     ->first();
 
         if(!$user) {
-            return response()->json(["error" => "User already have a house."], 400);//bad request
+            return response()->json(["error" => "User already have a house."], 403);
         }
 
-        $user->house_id = Auth::user()->house_id;
-        $user->save();
+        // Give assing role and house to user
+        $role_member = Role::where('house_id', Auth::user()->house_id)
+                        ->where('name', 'member')
+                        ->first(['id']);
+
+        $user->update([
+            'house_id' => Auth::user()->house_id,
+            'role_id' => $role_member->id,
+        ]);
     }
 }

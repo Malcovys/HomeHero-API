@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\HouseController;
 use App\Http\Controllers\Api\HouseMemeberController;
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,16 +24,24 @@ Route::post('/login', [UserController::class, 'login']);
 // Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
+    // Houseless users
+    Route::get('/users/houseless/search', [UserController::class, 'searchHouselessUser']);
+
     // Houses
     Route::prefix('/house')->group(function() {
+        Route::get('/', [HouseController::class, 'getAll']);
         Route::post('/', [HouseController::class, 'create']);
-        Route::post('/', [HouseController::class, 'getAll']);
 
         // Memeber
         Route::prefix('/member')->group(function () {
-            Route::get('/', [HouseMemeberController::class, 'getAll']);
+            Route::get('/', [HouseMemeberController::class, 'getHouseMate']);
             Route::post('/add/{user_id}', [HouseMemeberController::class, 'add']);
         });
-        
+
+        // Tasks
+        Route::prefix('/task')->group(function(): void{
+            Route::get('/', [TaskController::class, 'getHouseTasks']);
+            Route::post('/', [TaskController::class, 'create']);
+        });
     });
 });
