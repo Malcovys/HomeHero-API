@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\Task;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -48,19 +49,21 @@ class TaskController extends Controller
 
     }
 
-    public function rename(Request $request) { 
+    public function assing(int $house_id) {
+        // Liste des tâches
+        $tasks = Task::where('house_id', $house_id)
+                ->get(['id', 'freqency', 'required_member']);
 
-    }
+        // Liste des membres
+        $users = User::where('house_id', $house_id)
+                ->get(['id']);
 
-    public function assing(Request $request) {
-
-    }
-
-    public function updateRequiredMember(Request $request) {
-
-    }
-
-    public function updateFrequency(Request $request) {
-
+        foreach($tasks as $task) {
+            foreach(range(1, 7) as $day) {
+                if($task->freqency == 1) {
+                    
+                }
+            }
+        }
     }
 }

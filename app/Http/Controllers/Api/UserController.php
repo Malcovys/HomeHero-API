@@ -38,7 +38,7 @@ class UserController extends Controller
                 'password' => 'required',
             ]);
         } catch(\Exception $exception) {
-            return response()->json(['error'=> $exception->getMessage()], $exception->getCode());
+            return response()->json(['error'=> $exception->getMessage()], 400);
         }
 
         $user['password'] = \Illuminate\Support\Facades\Hash::make($user['password']);
@@ -53,7 +53,7 @@ class UserController extends Controller
                 'password' => 'required',
             ]);
         } catch(\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
+            return response()->json(['error' => $exception->getMessage()], 400);
         }
     
         if (!Auth::attempt($credential)) {

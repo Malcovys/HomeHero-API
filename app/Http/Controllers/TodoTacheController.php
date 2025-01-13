@@ -45,8 +45,6 @@ class TodoTacheController extends Controller
     public function getUserTache($foyer_id, $date) {
         $allTache = Tache::orderBy('name', 'asc')->select('id', 'name', 'color')->where('foyer_id','=', $foyer_id)->get();
         $allUser = User::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->where('active', true)->get();
-        // $allGroupe = Groupe::orderBy('id', 'asc')->where('foyer_id','=', $foyer_id)->get();
-        
 
         $allGroupe = Groupe::orderBy('id', 'asc')
         ->where('foyer_id', '=', $foyer_id)
@@ -58,13 +56,6 @@ class TodoTacheController extends Controller
         
         
         if($allGroupe->isNotEmpty()){
-            // $userNotInGroupe = User::orderBy('id', 'asc')
-            //     ->where('foyer_id','=', $foyer_id)
-            //     ->where('groupe_id', null)
-            //     ->where('active', true)
-            //     ->get();
-
-            // $allUser = $allGroupe;
             $userNotInGroupe = User::orderBy('id', 'asc')
                 ->where('foyer_id', '=', $foyer_id)
                 ->where('groupe_id', null)

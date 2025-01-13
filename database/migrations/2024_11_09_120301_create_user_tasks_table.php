@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_tasks', function (Blueprint $table) {
             $table->foreignId('task_id')->constrained('tasks')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->date('date');
+            $table->integer('day')->min(1)->max(7);
             $table->boolean('complete')->default(false);
             $table->timestamps();
         });
