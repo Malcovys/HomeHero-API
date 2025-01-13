@@ -36,7 +36,7 @@ class TaskController extends Controller
                 'required_member' => 'required|int|min:1',
             ]);
         } catch(\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
+            return response()->json(['error' => $exception->getMessage()], 400);
         }
 
         Task::create([
