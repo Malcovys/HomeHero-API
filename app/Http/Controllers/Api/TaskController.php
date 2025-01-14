@@ -62,8 +62,8 @@ class TaskController extends Controller
         }
 
         $userTasks = [];
-        foreach($tasks as $task) {
-            foreach(range(1, 7) as $day) {
+        foreach(range(1, 7) as $day) {
+            foreach($tasks as $task) {
                 if(($day-1) % $task->frequency == 0) {
                     for($i=0; $i < $task->required_member; $i++) {
                         $current_user = $userQueue->dequeue();
