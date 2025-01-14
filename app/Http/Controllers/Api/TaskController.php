@@ -49,21 +49,36 @@ class TaskController extends Controller
 
     }
 
-    public function assing(int $house_id) {
-        // Liste des tâches
+    public function assing() {
+        $house_id = Auth::user()->house_id;
         $tasks = Task::where('house_id', $house_id)
-                ->get(['id', 'freqency', 'required_member']);
-
-        // Liste des membres
+                ->get(['id', 'frequency', 'required_member']);
         $users = User::where('house_id', $house_id)
                 ->get(['id']);
 
+        $userQueue = new \SplQueue();
+        foreach($users as $user) {
+            $userQueue->enqueue($user->id);
+        }
+
+        $userTasks = [];
         foreach($tasks as $task) {
             foreach(range(1, 7) as $day) {
-                if($task->freqency == 1) {
-                    
+                if(($day-1) % $task->frequency !== 0) {
+                    break;
+                }
+
+                for($i=0; $i < $task->required_member; $i++) {
+                    $current_user = $userQueue->dequeue();
+                    $userTasks[] = [
+                        'task_id' => $task->id,
+                        'user_id' => $current_user,
+                        'day' => $day
+                    ];
+                    $userQueue->enqueue($current_user);
                 }
             }
         }
+        return response()->json(['userTasks' => $userTasks]);
     }
 }
