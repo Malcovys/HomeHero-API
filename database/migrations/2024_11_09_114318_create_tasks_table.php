@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('house_id')->constrained('houses')->cascadeOnDelete();
             $table->integer('frequency')->min(1)->max(7);
-            $table->integer('required_member')->unsigned();
+            $table->integer('required_member')->min(1);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
