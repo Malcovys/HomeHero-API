@@ -50,18 +50,35 @@ class TaskController extends Controller
     }
 
     public function assing() {
+        // Get house id
         $house_id = Auth::user()->house_id;
+
+        // Get all tasks that are active
         $tasks = Task::where('house_id', $house_id)
+                ->whereNot('is_active', false)
                 ->get(['id', 'frequency', 'required_member']);
+
+        // Get all users that are present
         $users = User::where('house_id', $house_id)
+                ->whereNot('present', false)
                 ->get(['id']);
 
+        // Create a queue of user ids
         $userQueue = new \SplQueue();
         foreach($users as $user) {
             $userQueue->enqueue($user->id);
         }
 
+        // Create a queue of task
+        $taskQueue = new \SplQueue();
+        foreach($tasks as $task) {
+            $taskQueue->enqueue($task);
+        }
+
+        // Create an array to store user tasks
         $userTasks = [];
+
+        // Assign tasks to users
         foreach(range(1, 7) as $day) {
             foreach($tasks as $task) {
                 if(($day-1) % $task->frequency == 0) {
