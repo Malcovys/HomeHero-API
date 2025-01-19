@@ -50,50 +50,48 @@ class TaskController extends Controller
     }
 
     public function assing() {
-        // Get house id
+        $taskQueue = new \SplQueue();
+        $userQueue = new \SplQueue();
         $house_id = Auth::user()->house_id;
+        $userTasks = []; // Array to store user tasks
 
-        // Get all tasks that are active
+        /* Get all tasks that are active
+        And set tasks to queue */
         $tasks = Task::where('house_id', $house_id)
                 ->whereNot('is_active', false)
                 ->get(['id', 'frequency', 'required_member']);
-
-        // Get all users that are present
-        $users = User::where('house_id', $house_id)
-                ->whereNot('present', false)
-                ->get(['id']);
-
-        // Create a queue of user ids
-        $userQueue = new \SplQueue();
-        foreach($users as $user) {
-            $userQueue->enqueue($user->id);
-        }
-
-        // Create a queue of task
-        $taskQueue = new \SplQueue();
         foreach($tasks as $task) {
             $taskQueue->enqueue($task);
         }
 
-        // Create an array to store user tasks
-        $userTasks = [];
+        /* Get all users that are present
+        And user ids to queue */
+        $users = User::where('house_id', $house_id)
+                ->whereNot('present', false)
+                ->get(['id']);
+        foreach($users as $user) {
+            $userQueue->enqueue($user->id);
+        }        
 
         // Assign tasks to users
-        foreach(range(1, 7) as $day) {
-            foreach($tasks as $task) {
-                if(($day-1) % $task->frequency == 0) {
+        foreach(range(1, 14) as $day) {
+            foreach($taskQueue as $task) {
+                if(($day) % $task->frequency == 0) {
                     for($i=0; $i < $task->required_member; $i++) {
-                        $current_user = $userQueue->dequeue();
+                        $current_user = $userQueue->dequeue(); // Get current user
+
                         $userTasks[] = [
                             'task_id' => $task->id,
                             'user_id' => $current_user,
                             'day' => $day
                         ];
-                        $userQueue->enqueue($current_user);
+
+                        $userQueue->enqueue($current_user); // Return user to queue
                     }
                 }
             }
         }
+
         return response()->json(['userTasks' => $userTasks]);
     }
 }
