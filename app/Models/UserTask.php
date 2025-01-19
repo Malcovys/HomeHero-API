@@ -19,11 +19,11 @@ class UserTask extends Model
         'complete',
     ];
 
-    public function task(): BelongsTo {
+    public function tasks(): BelongsTo {
         return $this->belongsTo(Task::class);
     }
 
-    public function user(): BelongsTo {
+    public function users(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 

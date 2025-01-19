@@ -16,6 +16,7 @@ class HouseController extends Controller
         $houses = House::get();
         return response()->json(['houses' => $houses]);
     }
+    
     public function create(Request $request) {
         try {
             $house = $request->validate([

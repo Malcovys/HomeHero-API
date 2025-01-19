@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('/', [TaskController::class, 'create']);
 
             // Board
-            Route::get('/board', action: [TaskController::class, 'assing']);
+            Route::get('/board', action: [TaskController::class, 'scheduleNextWeekTasks']);
         });
     });
 });
