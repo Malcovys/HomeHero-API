@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\UserTask;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -49,43 +50,77 @@ class TaskController extends Controller
 
     }
 
-    public function assing() {
-        $taskQueue = new \SplQueue();
-        $userQueue = new \SplQueue();
-        $house_id = Auth::user()->house_id;
-        $userTasks = []; // Array to store user tasks
-
-        /* Get all tasks that are active
-        And set tasks to queue */
+    private function getTaskQueue(integer $house_id, integer $last_task_id) {
         $tasks = Task::where('house_id', $house_id)
-                ->whereNot('is_active', false)
+                ->where('id', '>', $last_task_id)
+                ->where('is_active', true)
                 ->get(['id', 'frequency', 'required_member']);
+        if($last_task_id > 0) {
+            $tasks = $tasks->merge(Task::where('house_id', $house_id)
+                        ->where('id', '<=', $last_task_id)
+                        ->where('is_active', true)
+                        ->get(['id', 'frequency', 'required_member'])
+                    );
+        }
+
+        $taskQueue = new \SplQueue();
         foreach($tasks as $task) {
             $taskQueue->enqueue($task);
         }
+        
+        return $taskQueue;
+    }
 
-        /* Get all users that are present
-        And user ids to queue */
+    private function getUserQueue(integer $house_id, integer $last_user_id) {
         $users = User::where('house_id', $house_id)
-                ->whereNot('present', false)
+                ->where('id', '>', $last_user_id)
+                ->where('present', true)
                 ->get(['id']);
+        if($last_user_id > 0) {
+            $users = $users->merge(User::where('house_id', $house_id)
+                        ->where('id', '<=', $last_user_id)
+                        ->where('present', true)
+                        ->get(['id'])
+                    );
+        }
+
+        $userQueue = new \SplQueue();
         foreach($users as $user) {
-            $userQueue->enqueue($user->id);
-        }        
+            $userQueue->enqueue($user);
+        }
+
+        return $userQueue;
+    }
+
+    public function assing() {
+        $userTasks = array();
+        $house_id = Auth::user()->house_id;
+        $last_task_id = 0;
+        $last_user_id = 0;
+
+        $last_userTask = UserTask::where('house_id', $house_id)
+                ->orderBy('day', 'desc')
+                ->first(['task_id', 'user_id', 'day']);
+        
+        if($last_userTask) {
+            $last_task_id = $last_userTask->task_id;
+            $last_user_id = $last_userTask->user_id;
+        }
+
+        $taskQueue = $this->getTaskQueue($house_id, $last_task_id);
+        $userQueue = $this->getUserQueue($house_id, $last_user_id);     
 
         // Assign tasks to users
-        foreach(range(1, 14) as $day) {
+        foreach(range(1, 7) as $day) {
             foreach($taskQueue as $task) {
                 if(($day) % $task->frequency == 0) {
                     for($i=0; $i < $task->required_member; $i++) {
                         $current_user = $userQueue->dequeue(); // Get current user
-
                         $userTasks[] = [
                             'task_id' => $task->id,
                             'user_id' => $current_user,
                             'day' => $day
                         ];
-
                         $userQueue->enqueue($current_user); // Return user to queue
                     }
                 }
